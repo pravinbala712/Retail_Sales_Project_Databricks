@@ -1,0 +1,284 @@
+{
+  "datasets": [
+    {
+      "name": "8b34d798",
+      "displayName": "gold_fact_sales",
+      "config": {
+        "version": "1.1",
+        "source": "retails_project.gold.gold_fact_sales",
+        "dimensions": [
+          {
+            "expr": "source.*"
+          }
+        ],
+        "measures": [
+          {
+            "name": "count",
+            "expr": "COUNT(*)",
+            "comment": "Represents the total number of rows in the dataset. Use this measure to count all",
+            "displayName": "Count"
+          }
+        ]
+      }
+    },
+    {
+      "name": "f1b9ab8e",
+      "displayName": "Total Revenue per Category",
+      "queryLines": [
+        "SELECT category, SUM(Total_Revenue) AS total_revenue\r\n",
+        "FROM retails_project.gold.gold_fact_sales\r\n",
+        "GROUP BY category;"
+      ]
+    },
+    {
+      "name": "28c38595",
+      "displayName": "Total daily revenuie",
+      "queryLines": [
+        "SELECT\r\n",
+        "    order_date,\r\n",
+        "    SUM(Total_Revenue) AS daily_revenue\r\n",
+        "FROM retails_project.gold.gold_fact_sales\r\n",
+        "GROUP BY order_date\r\n",
+        "ORDER BY order_date;"
+      ]
+    },
+    {
+      "name": "fd302dfe",
+      "displayName": "Retail Category Sales Summary by Order Volume",
+      "queryLines": [
+        "SELECT\r\n",
+        "    category,\r\n",
+        "    SUM(Total_Orders) AS total_orders\r\n",
+        "FROM retails_project.gold.gold_fact_sales\r\n",
+        "GROUP BY category\r\n",
+        "ORDER BY total_orders DESC;"
+      ]
+    }
+  ],
+  "pages": [
+    {
+      "name": "82098edd",
+      "displayName": "Project 1 dashboard",
+      "layout": [
+        {
+          "widget": {
+            "name": "9d553ae0",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "f1b9ab8e",
+                  "fields": [
+                    {
+                      "name": "category",
+                      "expression": "`category`"
+                    },
+                    {
+                      "name": "sum(total_revenue)",
+                      "expression": "SUM(`total_revenue`)"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "version": 3,
+              "widgetType": "bar",
+              "encodings": {
+                "x": {
+                  "fieldName": "category",
+                  "scale": {
+                    "type": "categorical"
+                  }
+                },
+                "y": {
+                  "fieldName": "sum(total_revenue)",
+                  "scale": {
+                    "type": "quantitative"
+                  }
+                },
+                "color": {
+                  "fieldName": "category",
+                  "scale": {
+                    "type": "categorical"
+                  }
+                },
+                "label": {
+                  "show": true
+                }
+              },
+              "data": {
+                "queryName": "main_query"
+              }
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 2,
+            "width": 6,
+            "height": 6
+          }
+        },
+        {
+          "widget": {
+            "name": "adb7167a",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "28c38595",
+                  "fields": [
+                    {
+                      "name": "daily(order_date)",
+                      "expression": "DATE_TRUNC(\"DAY\", `order_date`)"
+                    },
+                    {
+                      "name": "sum(daily_revenue)",
+                      "expression": "SUM(`daily_revenue`)"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "version": 3,
+              "widgetType": "line",
+              "encodings": {
+                "x": {
+                  "fieldName": "daily(order_date)",
+                  "scale": {
+                    "type": "temporal"
+                  }
+                },
+                "y": {
+                  "fieldName": "sum(daily_revenue)",
+                  "scale": {
+                    "type": "quantitative"
+                  }
+                }
+              },
+              "data": {
+                "queryName": "main_query"
+              }
+            }
+          },
+          "position": {
+            "x": 6,
+            "y": 2,
+            "width": 6,
+            "height": 6
+          }
+        },
+        {
+          "widget": {
+            "name": "6c4e0ce8",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "fd302dfe",
+                  "fields": [
+                    {
+                      "name": "sum(total_orders)",
+                      "expression": "SUM(`total_orders`)"
+                    },
+                    {
+                      "name": "category",
+                      "expression": "`category`"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "version": 3,
+              "widgetType": "pie",
+              "encodings": {
+                "angle": {
+                  "fieldName": "sum(total_orders)",
+                  "scale": {
+                    "type": "quantitative"
+                  }
+                },
+                "color": {
+                  "fieldName": "category",
+                  "scale": {
+                    "type": "categorical"
+                  }
+                },
+                "label": {
+                  "show": true
+                }
+              },
+              "data": {
+                "queryName": "main_query"
+              }
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 8,
+            "width": 6,
+            "height": 6
+          }
+        },
+        {
+          "widget": {
+            "name": "aac90520",
+            "multilineTextboxSpec": {
+              "lines": [
+                "# <span style=\"text-align:center;display:block\"><span style=\"font-weight: 700;font-size: 24px;\">CUSTOMER AND ORDER SALES DASHBOARD</span></span>"
+              ]
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 0,
+            "width": 12,
+            "height": 2
+          }
+        }
+      ],
+      "pageType": "PAGE_TYPE_CANVAS",
+      "layoutVersion": "GRID_V1"
+    },
+    {
+      "name": "d60e24ad",
+      "displayName": "Global Filters",
+      "layout": [
+        {
+          "widget": {
+            "name": "12fa9817",
+            "spec": {
+              "encodings": {
+                "fields": []
+              },
+              "version": 2,
+              "widgetType": "filter-single-select",
+              "frame": {
+                "showTitle": true
+              }
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 0,
+            "width": 1,
+            "height": 2
+          }
+        }
+      ],
+      "pageType": "PAGE_TYPE_GLOBAL_FILTERS",
+      "layoutVersion": "GRID_V1"
+    }
+  ],
+  "uiSettings": {
+    "theme": {
+      "widgetHeaderAlignment": "ALIGNMENT_UNSPECIFIED"
+    },
+    "applyModeEnabled": false
+  }
+}
